@@ -57,5 +57,28 @@ app.delete("/jokes/:id", async (req, res) => {
   }
 });
 
+app.put("/jokes/:id", async (req, res) => {
+  const { id } = req.params;
+  const { joke, tags } = req.body;
+  if (!id) {
+    res.sendStatus(204);
+  }
+  const update = {};
+  if (joke) {
+    update.joke = joke;
+  }
+  if (tags) {
+    update.tags = tags;
+  }
+
+  try {
+    await Joke.update(update, { where: { id: id } });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 // we export the app, not listening in here, so that we can run tests
 module.exports = app;
